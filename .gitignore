@@ -1,0 +1,3 @@
+*.retry
+ENV/
+/.venv

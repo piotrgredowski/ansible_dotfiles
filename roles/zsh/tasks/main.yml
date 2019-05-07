@@ -1,0 +1,57 @@
+---
+- name: Set ZSH default shell for user
+  become: yes
+  command: chsh -s /usr/bin/zsh "{{ username }}"
+
+- name: Ensure .zshrc exists
+  file:
+    path: /home/{{ username }}/.zshrc
+    state: touch
+
+- name: Install everything zsh related
+  include_role:
+    name: gantsign.antigen
+  vars:
+    antigen_install_oh_my_zsh: yes
+    users:
+      - username: '{{ username }}'
+        antigen_libraries:
+          - name: oh-my-zsh
+        antigen_theme:
+          name: ys
+        antigen_bundles:
+          # Bundles from the default repo (robbyrussell's oh-my-zsh).
+          - name: git
+          - name: pip
+          - name: web-search
+          - name: colored-man-pages
+          - name: compleat
+          - name: cp
+          - name: history
+          - name: nvm
+          - name: command-not-found
+          - name: zsh-syntax-highlighting
+            url: zsh-users/zsh-syntax-highlighting
+          - name: zsh-autosuggestions
+            url: zsh-users/zsh-autosuggestions
+
+- name: Ensure .oh-my-zsh is owned by user
+  file:
+    path: /home/{{ username }}/
+    owner: '{{username}}'
+    group: '{{username}}'
+
+- name: Copy a .zshrc_custom file
+  copy:
+    src: files/.zshrc_custom
+    dest: /home/{{ username }}/.zshrc_custom
+    owner: '{{username}}'
+    group: '{{username}}'
+
+- name: Ensure .zshrc_custom is sourced in .zshrc
+  blockinfile:
+    path: /home/{{ username }}/.zshrc
+    insertafter: antigenrc
+    block: |
+      source /home/{{ username }}/.antigen/antigen.zsh
+      source /home/{{ username }}/.zshrc_custom

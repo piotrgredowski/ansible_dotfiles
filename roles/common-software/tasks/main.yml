@@ -1,0 +1,46 @@
+- name: Install a list of packages
+  apt:
+    name: '{{ packages }}'
+  vars:
+    packages:
+      - dnsutils
+      - git
+      - vim
+      - htop
+      - ncdu
+      - dbus
+      - curl
+      - tmux
+
+- name: Copy .tmux.conf
+  ansible.builtin.copy:
+    src: files/.tmux.conf
+    dest: /home/{{username}}/.tmux.conf
+    owner: '{{username}}'
+    group: '{{username}}'
+
+- name: Add repo for hstr
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release <= '21.10'
+  apt_repository:
+    repo: ppa:ultradvorka/ppa
+    state: present
+
+- name: Install hstr
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_release > '21.10'
+  apt:
+    name: hstr
+    state: present
+
+- name: Create Downloads directory
+  file:
+    path: ~/Downloads
+    state: directory
+
+- name: Download lsd
+  get_url:
+    url: https://github.com/Peltoche/lsd/releases/download/0.17.0/lsd_0.17.0_amd64.deb
+    dest: ~/Downloads
+
+- name: Install lsd
+  apt:
+    deb: ~/Downloads/lsd_0.17.0_amd64.deb

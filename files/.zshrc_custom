@@ -1,0 +1,35 @@
+### START of ansible additions
+
+# HSTR configuration - add this to ~/.bashrc
+alias hh=hstr                    			# hh to be alias for hstr
+export HISTFILE=~/.bash_history  			# ensure history file visibility
+export HSTR_CONFIG=hicolor,prompt-bottom	# get more colors
+bindkey -s "\C-r" "\eqhstr\n"     			# bind hstr to Ctrl-r (for Vi mode check doc)
+
+# Aliases for lsd
+alias ls='lsd'
+alias ll='ls -l'
+alias la='ls -a'
+alias lla='ls -la'
+alias lt='ls --tree'
+
+[[ $TMUX = "" ]] && export TERM="xterm-256color"
+
+fpath=(~/.zsh/completion $fpath)
+autoload -Uz compinit && compinit -i
+
+alias ...="../.."
+alias ....="../../.."
+
+pasteinit() {
+  OLD_SELF_INSERT=${${(s.:.)widgets[self-insert]}[2,3]}
+  zle -N self-insert url-quote-magic # I wonder if you'd need `.url-quote-magic`?
+}
+
+pastefinish() {
+  zle -N self-insert $OLD_SELF_INSERT
+}
+zstyle :bracketed-paste-magic paste-init pasteinit
+zstyle :bracketed-paste-magic paste-finish pastefinish
+
+### END of ansible additions

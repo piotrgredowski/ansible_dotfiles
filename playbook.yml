@@ -1,0 +1,12 @@
+---
+- name: all
+  hosts: all
+  remote_user: root
+  become: yes
+  gather_facts: yes
+  vars:
+    username: pg
+  roles:
+    - common-software
+    - docker
+    - zsh
