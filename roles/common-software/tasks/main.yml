@@ -12,6 +12,7 @@
       - curl
       - tmux
       - jq
+      - sqlite3
 
 - name: Copy .tmux.conf
   ansible.builtin.copy:
