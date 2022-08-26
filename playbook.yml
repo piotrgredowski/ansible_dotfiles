@@ -6,7 +6,10 @@
   gather_facts: yes
   vars:
     username: pg
+    brew_formulae:
+      - k9s
   roles:
     - common-software
     - docker
     - zsh
+    - monolithprojects.homebrew
